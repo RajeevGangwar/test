@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rajeev Gangwar | Supply Chain Analytics & AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&family=Source+Serif+4:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #ffffff;
+            --color-sidebar: #1a1f2e;
+            --color-sidebar-hover: #252b3d;
+            --color-surface: #f8f9fb;
+            --color-border: #e2e5eb;
+            --color-text: #2d3142;
+            --color-text-light: #6b7280;
+            --color-text-sidebar: #a3abbe;
+            --color-primary: #0052cc;
+            --color-primary-light: #e6f0ff;
+            --color-accent: #00875a;
+            --sidebar-width: 280px;
+            --font-sans: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-serif: 'Source Serif 4', Georgia, serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: var(--font-sans);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            display: flex;
+            min-height: 100vh;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--color-sidebar);
+            position: fixed;
+            top: 0; left: 0;
+            height: 100vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+        }
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+        }
+        .sidebar-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .sidebar-avatar {
+            width: 48px; height: 48px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #0747a6 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .sidebar-name { color: white; font-weight: 600; font-size: 1rem; }
+        .sidebar-title { color: var(--color-text-sidebar); font-size: 0.8rem; }
+        .sidebar-nav { flex: 1; padding: 1rem 0; }
+        .nav-section { margin-bottom: 1.5rem; }
+        .nav-section-title {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text-sidebar);
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.65rem 1.5rem;
+            color: var(--color-text-sidebar);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+        .nav-link:hover { background: var(--color-sidebar-hover); color: white; }
+        .nav-link.active {
+            background: var(--color-sidebar-hover);
+            color: white;
+            border-left-color: var(--color-primary);
+        }
+        .nav-link svg { width: 18px; height: 18px; opacity: 0.7; }
+        .nav-link:hover svg, .nav-link.active svg { opacity: 1; }
+        .sidebar-footer {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+        .sidebar-contact { display: flex; flex-direction: column; gap: 0.5rem; }
+        .sidebar-contact a {
+            color: var(--color-text-sidebar);
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: color 0.2s ease;
+        }
+        .sidebar-contact a:hover { color: white; }
+        .sidebar-contact svg { width: 14px; height: 14px; }
+        .main { flex: 1; margin-left: var(--sidebar-width); min-height: 100vh; }
+        .page { display: none; animation: fadeIn 0.3s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .page-header {
+            background: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: 3rem 4rem 2rem;
+        }
+        .page-header h1 {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .page-header p { color: var(--color-text-light); font-size: 1rem; }
+        .page-content { padding: 3rem 4rem; max-width: 1200px; }
+        .hero-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 4rem;
+            padding: 4rem;
+            background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-bg) 100%);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .hero-content h1 {
+            font-family: var(--font-serif);
+            font-size: 2.75rem;
+            font-weight: 600;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+        .hero-content h1 span { color: var(--color-primary); }
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--color-text-light);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+        .hero-cta { display: flex; gap: 1rem; }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+        }
+        .btn-primary { background: var(--color-primary); color: white; }
+        .btn-primary:hover { background: #0747a6; }
+        .btn-secondary {
+            background: white;
+            color: var(--color-text);
+            border: 1px solid var(--color-border);
+        }
+        .btn-secondary:hover { border-color: var(--color-primary); color: var(--color-primary); }
+        .hero-stats {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        .hero-stats h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-light);
+            margin-bottom: 1.5rem;
+        }
+        .stat-item { padding: 1rem 0; border-bottom: 1px solid var(--color-border); }
+        .stat-item:last-child { border-bottom: none; }
+        .stat-value {
+            font-family: var(--font-serif);
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+        .stat-label { font-size: 0.85rem; color: var(--color-text-light); }
+        .quick-links {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            padding: 3rem 4rem;
+        }
+        .quick-card {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-decoration: none;
+            color: var(--color-text);
+            transition: all 0.2s ease;
+        }
+        .quick-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 4px 12px rgba(0,82,204,0.1);
+        }
+        .quick-card-icon {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            background: var(--color-primary-light);
+            color: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .quick-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .quick-card p { font-size: 0.85rem; color: var(--color-text-light); }
+        .experience-item {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+        .experience-item:last-child { border-bottom: none; }
+        .experience-date { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-light); }
+        .experience-company { font-size: 0.9rem; color: var(--color-primary); font-weight: 500; }
+        .experience-content h3 { font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .experience-content p { color: var(--color-text-light); margin-bottom: 1rem; }
+        .experience-highlights { list-style: none; }
+        .experience-highlights li {
+            position: relative;
+            padding-left: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--color-text-light);
+        }
+        .experience-highlights li::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0.6em;
+            width: 6px; height: 6px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+        .skills-section { margin-top: 3rem; }
+        .skills-section h2 { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1.5rem; }
+        .skills-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem; }
+        .skill-category { background: var(--color-surface); border-radius: 8px; padding: 1.5rem; }
+        .skill-category h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        .skill-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .skill-tag {
+            background: white;
+            border: 1px solid var(--color-border);
+            padding: 0.4rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .articles-grid { display: grid; gap: 1.5rem; }
+        .article-card {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 2rem;
+            align-items: start;
+            padding: 1.5rem;
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-text);
+            transition: all 0.2s ease;
+        }
+        .article-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .article-meta { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+        .article-category {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            color: var(--color-primary);
+            background: var(--color-primary-light);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+        }
+        .article-date { font-size: 0.8rem; color: var(--color-text-light); }
+        .article-card h3 {
+            font-family: var(--font-serif);
+            font-size: 1.25rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        .article-card p { font-size: 0.9rem; color: var(--color-text-light); line-height: 1.6; }
+        .article-read-time { font-size: 0.8rem; color: var(--color-text-light); white-space: nowrap; }
+        .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .project-card {
+            background: white;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        .project-card:hover {
+            border-color: var(--color-primary);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .project-image {
+            height: 160px;
+            background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-primary-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: var(--color-text-light);
+        }
+        .project-content { padding: 1.5rem; }
+        .project-content h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .project-content p { font-size: 0.85rem; color: var(--color-text-light); margin-bottom: 1rem; }
+        .project-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .project-tag {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            background: var(--color-surface);
+            border-radius: 4px;
+            color: var(--color-text-light);
+        }
+        .education-grid { display: grid; gap: 1.5rem; }
+        .education-card {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            padding: 1.5rem;
+            background: var(--color-surface);
+            border-radius: 8px;
+        }
+        .education-card h3 { font-family: var(--font-serif); font-size: 1.1rem; font-weight: 500; margin-bottom: 0.25rem; }
+        .education-card p { color: var(--color-text-light); font-size: 0.9rem; }
+        .contact-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 3rem; }
+        .contact-card { background: var(--color-surface); border-radius: 8px; padding: 1.5rem; text-align: center; }
+        .contact-card svg { width: 24px; height: 24px; color: var(--color-primary); margin-bottom: 1rem; }
+        .contact-card h4 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-light);
+            margin-bottom: 0.5rem;
+        }
+        .contact-card a { color: var(--color-text); text-decoration: none; font-weight: 500; }
+        .contact-card a:hover { color: var(--color-primary); }
+        .contact-form { background: var(--color-surface); border-radius: 8px; padding: 2rem; }
+        .contact-form h3 { font-family: var(--font-serif); font-size: 1.25rem; margin-bottom: 1.5rem; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.5rem; }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            background: white;
+            transition: border-color 0.2s ease;
+        }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--color-primary); }
+        .form-group textarea { min-height: 120px; resize: vertical; }
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem; left: 1rem;
+            z-index: 200;
+            background: var(--color-sidebar);
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        @media (max-width: 1024px) {
+            .hero-section { grid-template-columns: 1fr; gap: 2rem; }
+            .quick-links { grid-template-columns: 1fr; }
+            .projects-grid { grid-template-columns: 1fr; }
+            .skills-grid { grid-template-columns: 1fr; }
+            .contact-grid { grid-template-columns: 1fr; }
+            .form-row { grid-template-columns: 1fr; }
+            .experience-item { grid-template-columns: 1fr; gap: 0.5rem; }
+            .education-card { grid-template-columns: 1fr; gap: 0.5rem; }
+        }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); transition: transform 0.3s ease; }
+            .sidebar.open { transform: translateX(0); }
+            .main { margin-left: 0; }
+            .mobile-menu-toggle { display: block; }
+            .page-header, .page-content, .hero-section, .quick-links { padding-left: 2rem; padding-right: 2rem; }
+            .hero-section { padding-top: 5rem; }
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-menu-toggle" onclick="toggleSidebar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+    </button>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-profile">
+                <div class="sidebar-avatar">RG</div>
+                <div>
+                    <div class="sidebar-name">Rajeev Gangwar</div>
+                    <div class="sidebar-title">Supply Chain Analytics</div>
+                </div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">Main</div>
+                <a href="#home" class="nav-link active" data-page="home">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                    Home
+                </a>
+                <a href="#about" class="nav-link" data-page="about">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    About Me
+                </a>
+                <a href="#experience" class="nav-link" data-page="experience">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    Experience
+                </a>
+                <a href="#projects" class="nav-link" data-page="projects">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    Projects
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Content</div>
+                <a href="#articles" class="nav-link" data-page="articles">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    Articles
+                </a>
+                <a href="#insights" class="nav-link" data-page="insights">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    Insights & Notes
+                </a>
+                <a href="#resources" class="nav-link" data-page="resources">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Resources
+                </a>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">More</div>
+                <a href="#education" class="nav-link" data-page="education">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"></path></svg>
+                    Education
+                </a>
+                <a href="#contact" class="nav-link" data-page="contact">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    Contact
+                </a>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="sidebar-contact">
+                <a href="mailto:rajeev.gangwar@hotmail.com">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    rajeev.gangwar@hotmail.com
+                </a>
+                <a href="https://www.linkedin.com/in/gangwarrajeev/" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                    LinkedIn Profile
+                </a>
+            </div>
+        </div>
+    </aside>
+    <main class="main">
+        <!-- Home Page -->
+        <div class="page active" id="home">
+            <div class="hero-section">
+                <div class="hero-content">
+                    <h1>Supply Chain Analytics Expert with <span>15+ Years</span> of Experience</h1>
+                    <p>Transforming complex supply chains through data-driven insights, simulation modeling, and intelligent automation. Currently driving spare parts optimization at Applied Materials using ML and discrete-event simulation.</p>
+                    <div class="hero-cta">
+                        <a href="#contact" class="btn btn-primary" onclick="showPage('contact')">Get in Touch</a>
+                        <a href="#articles" class="btn btn-secondary" onclick="showPage('articles')">Read My Articles</a>
+                    </div>
+                </div>
+                <div class="hero-stats">
+                    <h3>Key Achievements</h3>
+                    <div class="stat-item">
+                        <div class="stat-value">$18M+</div>
+                        <div class="stat-label">Cost Savings Delivered</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">20%</div>
+                        <div class="stat-label">Cycle Time Reduction</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">15+</div>
+                        <div class="stat-label">Years in Supply Chain</div>
+                    </div>
+                </div>
+            </div>
+            <div class="quick-links">
+                <a href="#experience" class="quick-card" onclick="showPage('experience')">
+                    <div class="quick-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                    </div>
+                    <h3>Professional Experience</h3>
+                    <p>Applied Materials, Maruti Suzuki, and more</p>
+                </a>
+                <a href="#projects" class="quick-card" onclick="showPage('projects')">
+                    <div class="quick-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                    </div>
+                    <h3>Featured Projects</h3>
+                    <p>Simulation, optimization, and AI solutions</p>
+                </a>
+                <a href="#articles" class="quick-card" onclick="showPage('articles')">
+                    <div class="quick-card-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                    </div>
+                    <h3>Latest Articles</h3>
+                    <p>Insights on supply chain, AI, and analytics</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div class="page" id="about">
+            <div class="page-header">
+                <h1>About Me</h1>
+                <p>Supply Chain Analytics Expert | AI Enthusiast | Problem Solver</p>
+            </div>
+            <div class="page-content">
+                <div style="display: grid; grid-template-columns: 250px 1fr; gap: 3rem; margin-bottom: 3rem;">
+                    <div>
+                        <div style="width: 100%; aspect-ratio: 1; background: var(--color-surface); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--color-text-light); font-size: 0.85rem; border: 1px solid var(--color-border);">[Your Photo Here]</div>
+                    </div>
+                    <div>
+                        <p style="font-size: 1.15rem; margin-bottom: 1.5rem; line-height: 1.8;">I'm a Supply Chain Analytics Expert with a unique blend of mechanical engineering foundation and advanced analytics expertise. Currently at Applied Materials, I drive innovation in spare parts planning using statistical forecasting, discrete-event simulation, and machine learning.</p>
+                        <p style="color: var(--color-text-light); margin-bottom: 1.5rem;">My journey spans from transmission design at Maruti Suzuki to leading global logistics optimization initiatives. I specialize in translating complex operational challenges into data-driven solutions that deliver measurable impact.</p>
+                        <p style="color: var(--color-text-light);">Beyond traditional analytics, I'm passionate about agentic AI and its potential to revolutionize business process automation.</p>
+                    </div>
+                </div>
+                <div class="skills-section">
+                    <h2>Skills & Expertise</h2>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h4>Analytics & Visualization</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">SQL</span>
+                                <span class="skill-tag">Tableau</span>
+                                <span class="skill-tag">Hadoop</span>
+                                <span class="skill-tag">Databricks</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Supply Chain Tools</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Supply Chain Guru</span>
+                                <span class="skill-tag">AnyLogic</span>
+                                <span class="skill-tag">Celonis</span>
+                                <span class="skill-tag">ARIS</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>Optimization & Methods</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">Gurobi</span>
+                                <span class="skill-tag">Linear Programming</span>
+                                <span class="skill-tag">Mixed Integer Programming</span>
+                                <span class="skill-tag">Discrete Event Simulation</span>
+                            </div>
+                        </div>
+                        <div class="skill-category">
+                            <h4>AI & Automation</h4>
+                            <div class="skill-tags">
+                                <span class="skill-tag">MS Copilot Studio</span>
+                                <span class="skill-tag">Claude Code</span>
+                                <span class="skill-tag">Process Automation</span>
+                                <span class="skill-tag">Machine Learning</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experience Page -->
+        <div class="page" id="experience">
+            <div class="page-header">
+                <h1>Professional Experience</h1>
+                <p>15+ years driving supply chain excellence across semiconductor and automotive industries</p>
+            </div>
+            <div class="page-content">
+                <div class="experience-item">
+                    <div>
+                        <div class="experience-date">Mar 2024 — Present</div>
+                        <div class="experience-company">Applied Materials</div>
+                    </div>
+                    <div class="experience-content">
+                        <h3>Spares Planning Analyst</h3>
+                        <p>Applied Global Services — After-sales service and spare parts lifecycle management</p>
+                        <ul class="experience-highlights">
+                            <li>Lead business improvement projects using Machine Learning and Simulation</li>
+                            <li>Conduct scenario planning using End-to-End Supply Chain Simulation Model</li>
+                            <li>Develop warehouse capacity forecasts using S&OP forecast and growth trends</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="experience-item">
+                    <div>
+                        <div class="experience-date">Oct 2017 — Mar 2024</div>
+                        <div class="experience-company">Applied Materials</div>
+                    </div>
+                    <div class="experience-content">
+                        <h3>Logistics Network Optimization Analyst</h3>
+                        <p>Applied Global Services — Global logistics and network optimization</p>
+                        <ul class="experience-highlights">
+                            <li>Achieved ~10% cost savings and 20% cycle time reduction through automated reverse logistics</li>
+                            <li>Led tariff mitigation project saving $5M+ in duties (AGS Quarterly Team Award 2019)</li>
+                            <li>Saved $2.4M through Cartonization Algorithm for warehouse outbound packaging</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="experience-item">
+                    <div>
+                        <div class="experience-date">Jul 2008 — Jul 2015</div>
+                        <div class="experience-company">Maruti Suzuki India Ltd</div>
+                    </div>
+                    <div class="experience-content">
+                        <h3>Transmission Design & Supply Chain Localization</h3>
+                        <p>R&D Division and Supply Chain Division</p>
+                        <ul class="experience-highlights">
+                            <li>Delivered $10M in savings through localization price negotiations</li>
+                            <li>Managed transmission parts development from design to mass production</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Projects Page -->
+        <div class="page" id="projects">
+            <div class="page-header">
+                <h1>Projects</h1>
+                <p>Simulation models, optimization tools, and AI-powered solutions</p>
+            </div>
+            <div class="page-content">
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-image">[Project Screenshot]</div>
+                        <div class="project-content">
+                            <h3>[Supply Chain Digital Twin]</h3>
+                            <p>[Placeholder: Describe your digital twin or simulation project.]</p>
+                            <div class="project-tags">
+                                <span class="project-tag">Simulation</span>
+                                <span class="project-tag">Python</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-image">[Project Screenshot]</div>
+                        <div class="project-content">
+                            <h3>[AI Process Automation]</h3>
+                            <p>[Placeholder: Describe your agentic AI work.]</p>
+                            <div class="project-tags">
+                                <span class="project-tag">Agentic AI</span>
+                                <span class="project-tag">BPMN</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-image">[Project Screenshot]</div>
+                        <div class="project-content">
+                            <h3>[Inventory Optimization]</h3>
+                            <p>[Placeholder: Describe your forecasting work.]</p>
+                            <div class="project-tags">
+                                <span class="project-tag">ML</span>
+                                <span class="project-tag">Forecasting</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-image">[Project Screenshot]</div>
+                        <div class="project-content">
+                            <h3>[Network Optimization]</h3>
+                            <p>[Placeholder: Describe logistics optimization.]</p>
+                            <div class="project-tags">
+                                <span class="project-tag">Gurobi</span>
+                                <span class="project-tag">OR</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Articles Page -->
+        <div class="page" id="articles">
+            <div class="page-header">
+                <h1>Articles</h1>
+                <p>Thoughts on supply chain, AI, simulation, and analytics</p>
+            </div>
+            <div class="page-content">
+                <div class="articles-grid">
+                    <a href="#" class="article-card">
+                        <div>
+                            <div class="article-meta">
+                                <span class="article-category">Supply Chain</span>
+                                <span class="article-date">[Date]</span>
+                            </div>
+                            <h3>[Article: Digital Twins in Supply Chain]</h3>
+                            <p>[Placeholder: Write about implementing digital twins for supply chain simulation...]</p>
+                        </div>
+                        <div class="article-read-time">8 min read</div>
+                    </a>
+                    <a href="#" class="article-card">
+                        <div>
+                            <div class="article-meta">
+                                <span class="article-category">AI & Automation</span>
+                                <span class="article-date">[Date]</span>
+                            </div>
+                            <h3>[Article: Agentic AI for Business Processes]</h3>
+                            <p>[Placeholder: How AI agents transform invoice processing and workflow management...]</p>
+                        </div>
+                        <div class="article-read-time">12 min read</div>
+                    </a>
+                    <a href="#" class="article-card">
+                        <div>
+                            <div class="article-meta">
+                                <span class="article-category">Analytics</span>
+                                <span class="article-date">[Date]</span>
+                            </div>
+                            <h3>[Article: Spare Parts Demand Forecasting]</h3>
+                            <p>[Placeholder: Approaches to forecasting intermittent demand patterns...]</p>
+                        </div>
+                        <div class="article-read-time">10 min read</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Insights Page -->
+        <div class="page" id="insights">
+            <div class="page-header">
+                <h1>Insights & Notes</h1>
+                <p>Quick thoughts, observations, and learnings</p>
+            </div>
+            <div class="page-content">
+                <div class="articles-grid">
+                    <div class="article-card" style="cursor: default;">
+                        <div>
+                            <div class="article-meta">
+                                <span class="article-category">Note</span>
+                                <span class="article-date">[Date]</span>
+                            </div>
+                            <h3>[Insight: Key Takeaway from Recent Project]</h3>
+                            <p>[Placeholder: Share a quick insight or lesson learned...]</p>
+                        </div>
+                    </div>
+                    <div class="article-card" style="cursor: default;">
+                        <div>
+                            <div class="article-meta">
+                                <span class="article-category">Observation</span>
+                                <span class="article-date">[Date]</span>
+                            </div>
+                            <h3>[Observation: Industry Trend Worth Watching]</h3>
+                            <p>[Placeholder: Note an interesting trend you've observed...]</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resources Page -->
+        <div class="page" id="resources">
+            <div class="page-header">
+                <h1>Resources</h1>
+                <p>Curated tools, books, and references</p>
+            </div>
+            <div class="page-content">
+                <h2 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1.5rem;">Recommended Books</h2>
+                <div class="projects-grid" style="margin-bottom: 3rem;">
+                    <div class="project-card">
+                        <div class="project-content">
+                            <h3>[Book Title]</h3>
+                            <p>[Placeholder: Why you recommend this book...]</p>
+                            <div class="project-tags"><span class="project-tag">Supply Chain</span></div>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-content">
+                            <h3>[Book Title]</h3>
+                            <p>[Placeholder: Why you recommend this book...]</p>
+                            <div class="project-tags"><span class="project-tag">Analytics</span></div>
+                        </div>
+                    </div>
+                </div>
+                <h2 style="font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 1.5rem;">Useful Tools</h2>
+                <div class="projects-grid">
+                    <div class="project-card">
+                        <div class="project-content">
+                            <h3>[Tool Name]</h3>
+                            <p>[Placeholder: Describe the tool and how you use it...]</p>
+                            <div class="project-tags"><span class="project-tag">Simulation</span></div>
+                        </div>
+                    </div>
+                    <div class="project-card">
+                        <div class="project-content">
+                            <h3>[Tool Name]</h3>
+                            <p>[Placeholder: Describe the tool and how you use it...]</p>
+                            <div class="project-tags"><span class="project-tag">Optimization</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Education Page -->
+        <div class="page" id="education">
+            <div class="page-header">
+                <h1>Education</h1>
+                <p>Academic background and certifications</p>
+            </div>
+            <div class="page-content">
+                <div class="education-grid">
+                    <div class="education-card">
+                        <div class="education-date">Jul 2015 — May 2017</div>
+                        <div>
+                            <h3>Master of Science in Industrial Engineering</h3>
+                            <p>Oklahoma State University, Stillwater, USA</p>
+                        </div>
+                    </div>
+                    <div class="education-card">
+                        <div class="education-date">Jul 2004 — May 2008</div>
+                        <div>
+                            <h3>Bachelor of Technology in Mechanical Engineering</h3>
+                            <p>G B Pant University, Uttarakhand, India</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div class="page" id="contact">
+            <div class="page-header">
+                <h1>Get in Touch</h1>
+                <p>Open to opportunities in supply chain analytics, AI implementation, and operations optimization</p>
+            </div>
+            <div class="page-content">
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                        <h4>Email</h4>
+                        <a href="mailto:rajeev.gangwar@hotmail.com">rajeev.gangwar@hotmail.com</a>
+                    </div>
+                    <div class="contact-card">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                        <h4>LinkedIn</h4>
+                        <a href="https://www.linkedin.com/in/gangwarrajeev/" target="_blank">/in/gangwarrajeev</a>
+                    </div>
+                    <div class="contact-card">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.81.36 1.6.7 2.35a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.75.34 1.54.57 2.35.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        <h4>Phone</h4>
+                        <a href="tel:+14053348592">+1 (405) 334-8592</a>
+                    </div>
+                </div>
+                <div class="contact-form">
+                    <h3>Send a Message</h3>
+                    <form>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" placeholder="Your name">
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" placeholder="your@email.com">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" placeholder="What's this about?">
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" placeholder="Your message..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.dataset.page === pageId) link.classList.add('active');
+            });
+            document.getElementById('sidebar').classList.remove('open');
+            window.scrollTo(0, 0);
+        }
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const pageId = link.dataset.page;
+                showPage(pageId);
+                history.pushState(null, '', '#' + pageId);
+            });
+        });
+        if (window.location.hash) {
+            const pageId = window.location.hash.substring(1);
+            if (document.getElementById(pageId)) showPage(pageId);
+        }
+        window.addEventListener('popstate', () => {
+            const pageId = window.location.hash.substring(1) || 'home';
+            if (document.getElementById(pageId)) showPage(pageId);
+        });
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+        }
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            const toggle = document.querySelector('.mobile-menu-toggle');
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !toggle.contains(e.target) && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+        document.querySelector('.contact-form form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            alert('Form submission would be handled here. Connect to your backend or email service.');
+        });
+    </script>
+</body>
+</html>
